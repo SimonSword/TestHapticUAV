@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Red Point Game</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .game-container {
+      position: relative;
+      width: 400px;
+      height: 300px;
+      border: 1px solid #000;
+    }
+    .vertical-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: #000;
+    }
+    .red-point {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: red;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="vertical-line" style="left: 100px;"></div>
+    <div class="vertical-line" style="right: 100px;"></div>
+    <div class="red-point" id="redPoint"></div>
+  </div>
+  <button onclick="moveLeft()">Left</button>
+  <button onclick="moveRight()">Right</button>
+
+  <script>
+let redPoint = document.getElementById('redPoint');
+let leftButton = document.querySelector('button:nth-of-type(1)');
+let rightButton = document.querySelector('button:nth-of-type(2)');
+let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let oscillator;
+  
+
+function moveLeft() {
+  let currentPosition = parseInt(window.getComputedStyle(redPoint).left);
+  if (currentPosition > 100) {
+    redPoint.style.left = (currentPosition - 10) + 'px';
+    checkDistance()
+  }
+}
+
+function moveRight() {
+  let currentPosition = parseInt(window.getComputedStyle(redPoint).left);
+  if (currentPosition < 300) {
+    redPoint.style.left = (currentPosition + 10) + 'px';
+    checkDistance()
+  }
+}
+
+function checkDistance() {
+      let currentPosition = parseInt(window.getComputedStyle(redPoint).left);
+      let leftLinePosition = 100;
+      let rightLinePosition = 300;
+      let distanceToLeftLine = Math.abs(currentPosition - leftLinePosition);
+      let distanceToRightLine = Math.abs(currentPosition - rightLinePosition);
+
+      if (distanceToLeftLine <= 30 || distanceToRightLine <= 30) {
+        let distance = Math.min(distanceToLeftLine,distanceToRightLine)
+        playTone(distance);
+      } else 
+      stopTone();
+    }
+
+    function playTone(distance) {
+      let durationVibration = distance*5
+      var arr = [];
+
+        for (var i = 1; i < 100+1; i++) {
+            arr.push(durationVibration);
+        }
+      navigator.vibrate(arr);
+
+    }
+
+    function stopTone() {
+      navigator.vibrate(0)
+    }
+
+
+  </script>
+</body>
+</html>
